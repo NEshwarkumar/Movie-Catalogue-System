@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../static/img/movie.ico" type="image/x-icon">
+  <title>Movie Catalogue</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="dark-theme">
+<!-- HEADER -->
+<header class="navbar">
+  <h1><a href="/" style="color: white; text-decoration: none;">Movie Catalogue</a></h1>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/favorites" class="nav-link">Favorites</a>
+  </div>
+
+</header>
+<div class="nav-search">
+  <form action="/" method="get">
+    <input type="text" name="search" placeholder="Search for movies...">
+    <button type="submit">Search</button>
+  </form>
+</div>
+<!-- TRENDING SECTION -->
+<div th:if="${searchQuery == null}">
+  <h2 style="margin-left: 1rem;">Trending Movies</h2>
+  <div class="movie-grid trending-grid">
+    <div th:each="movie : ${movies}" class="movie-card">
+      <a th:href="@{'/movie/' + ${movie.id}}">
+        <img th:src="'https://image.tmdb.org/t/p/w200' + ${movie.posterPath}" />
+      </a>
+      <h3 th:text="${movie.title}"></h3>
+
+      <!-- Movie Description:-->
+      <p th:text="${#strings.abbreviate(movie.overview, 100)}">Movie Overview</p>
+
+      <a th:href="@{'/movie/' + ${movie.id}}">
+        <button class=" movie-action-btn">View Details</button>
+      </a>
+
+      <!-- Add to Favorites Form -->
+      <form th:action="@{/favorites/add}" method="post">
+        <input type="hidden" name="movieId" th:value="${movie.id}" />
+        <input type="hidden" name="movieTitle" th:value="${movie.title}" />
+        <input type="hidden" name="moviePoster" th:value="'https://image.tmdb.org/t/p/w200' + ${movie.posterPath}" />
+        <button type="submit" class="movie-action-btn">Add to Favorites</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<div id="searchOverlay" class="search-overlay" th:classappend="${searchQuery != null} ? ' active'">
+  <a href="/" class="close-btn" aria-label="Close Search">×</a>
+
+  <div class="search-form-wrapper">
+    <form action="/" method="get" class="search-form">
+      <input type="text" name="search" placeholder="Search for movies..." th:value="${searchQuery}" />
+      <button type="submit">Search</button>
+    </form>
+  </div>
+  <div class="movie-grid search-results">
+    <div th:each="movie : ${movies}" class="movie-card">
+      <img th:src="'https://image.tmdb.org/t/p/w200' + ${movie.posterPath}" />
+      <h3 th:text="${movie.title}"></h3>
+
+
+      <p th:text="${#strings.abbreviate(movie.overview, 100)}">Movie Overview</p> >
+
+      <a th:href="@{'/movie/' + ${movie.id}}">
+        <button class="movie-action-btn">View Details</button>
+      </a>
+      
+      <form th:action="@{/favorites/add}" method="post">
+        <input type="hidden" name="movieId" th:value="${movie.id}" />
+        <input type="hidden" name="movieTitle" th:value="${movie.title}" />
+        <input type="hidden" name="moviePoster" th:value="'https://image.tmdb.org/t/p/w200' + ${movie.posterPath}" />
+        <button type="submit" class="movie-action-btn">Add to Favorites</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Favorite Movies</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body class="dark-theme">
+<header class="navbar">
+  <h1><a href="/" style="color: white; text-decoration: none;">Movie Catalogue</a></h1>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/favorites" class="nav-link">Favorites</a>
+  </div>
+</header>
+<h1 class="page-title">Your Favorite Movies</h1>
+
+<div class="favorites-container" th:if="${favorites}">
+  <div th:each="fav : ${favorites}" class="favorite-card">
+      <img th:src="@{'https://image.tmdb.org/t/p/w200' + ${fav.moviePoster}}" alt="Poster" class="movie-poster"/>
+    <p th:text="${fav.movieTitle}" class="movie-title">Movie Title</p>
+    <div th:if="${fav.id != null}" class="remove-fav-container">
+      <form th:action="@{/favorites/remove}" method="post" class="remove-fav-form">
+        <input type="hidden" name="id" th:value="${fav.id}" />
+          <button type="submit" class="remove-btn">Remove from Favorites</button>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

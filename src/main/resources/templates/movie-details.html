@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${movie.title} + ' - Details'">Movie Details</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="dark-theme">
+<div class="movie-detail-container">
+    <a href="/" class="back-button">← Back</a>
+    <div class="movie-info">
+        <img th:src="@{'https://image.tmdb.org/t/p/w500' + ${movie.posterPath}}" alt="Movie Poster" />
+        <div class="movie-meta">
+            <h1 th:text="${movie.title}"></h1>
+            <p><strong>Release Date:</strong> <span th:text="${movie.releaseDate}"></span></p>
+            <p>
+                <strong>Rating:</strong>
+                <span th:with="fiveStarRating=${movie.rating / 2},
+                 fullStars=${T(java.lang.Math).floor(fiveStarRating)},
+                 halfStar=${(fiveStarRating % 1) >= 0.5},
+                 emptyStars=${5 - fullStars - (halfStar ? 1 : 0)}">
+    <span th:each="i : ${#numbers.sequence(1, fullStars)}">⭐</span>
+    <span th:if="${halfStar}">⭐</span>
+    <span th:each="i : ${#numbers.sequence(1, emptyStars)}">☆</span>
+    (<span th:text="${#numbers.formatDecimal(movie.rating, 1, 1)} + '/10'"></span>)
+  </span>
+            </p>
+            <p th:text="${movie.overview}"></p>
+            <form th:action="@{/favorites/add}" method="post">
+                <input type="hidden" name="movieId" th:value="${movie.id}" />
+                <input type="hidden" name="title" th:value="${movie.title}" />
+                <input type="hidden" name="posterPath" th:value="${movie.posterPath}" />
+                <form th:action="@{/favorites/add}" method="POST">
+                    <input type="hidden" name="movieId" th:value="${movie.id}" />
+                    <input type="hidden" name="movieTitle" th:value="${movie.title}" />
+                    <input type="hidden" name="moviePoster" th:value="${movie.posterPath}" />
+                    <button type="submit">Add to Favorites</button>
+                </form>
+            </form>
+        </div>
+    </div>
+    <div th:if="${#lists.isEmpty(favorites) == false}">
+        <p>Movie has been added to favorites!</p>
+    </div>
+</div>
+</body>
+</html>
